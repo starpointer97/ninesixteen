@@ -1,6 +1,5 @@
 package com.nishit.ninesixteen.main;
 
-import static com.nishit.ninesixteen.constants.Constants.MAX_QUEUE_THREADS;
 import static com.nishit.ninesixteen.constants.Constants.MIN_QUEUE_THREADS;
 import static com.nishit.ninesixteen.constants.Constants.QUEUE_CAPACITY;
 import static com.nishit.ninesixteen.constants.Constants.SQS_QUEUE_NAME;
@@ -51,7 +50,6 @@ public class Launcher {
 	public Executor listenerTaskExecutor() {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(MIN_QUEUE_THREADS);
-		executor.setMaxPoolSize(MAX_QUEUE_THREADS);
 		executor.setQueueCapacity(QUEUE_CAPACITY);
 		executor.setThreadNamePrefix("nishit-ninesixteen-listenerBean");
 		executor.setBeanName("listenerBean");

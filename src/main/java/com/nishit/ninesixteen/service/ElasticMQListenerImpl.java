@@ -3,19 +3,17 @@ package com.nishit.ninesixteen.service;
 import static com.nishit.ninesixteen.constants.Constants.REST_TEMPLATE;
 import static com.nishit.ninesixteen.constants.Constants.URL;
 import static com.nishit.ninesixteen.constants.Utils.changeMessageVisibilityRequest;
-import static com.nishit.ninesixteen.constants.Utils.deleteMessageRequest;
 import static com.nishit.ninesixteen.constants.Utils.getAmazonSQSClient;
 import static com.nishit.ninesixteen.constants.Utils.receiveMessageRequest;
 
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 
 import com.amazonaws.services.sqs.model.Message;
 import com.amazonaws.services.sqs.model.ReceiveMessageResult;
-import com.nishit.ninesixteen.listener.Bucket4jRateLimiter;
+import com.nishit.ninesixteen.listener.Bucket4jRateLimiterV2;
 import com.nishit.ninesixteen.listener.QueueListener;
 
 /**
@@ -29,6 +27,9 @@ import com.nishit.ninesixteen.listener.QueueListener;
 public class ElasticMQListenerImpl implements QueueListener, Runnable {
 
 	private static final int THREAD_SLEEP = 10000;
+	
+	@Autowired
+	private Bucket4jRateLimiterV2 bucket4jRateLimiterV2;
 
 	public Optional<Message> getMessageFromQueue() {
 		ReceiveMessageResult result = getAmazonSQSClient().receiveMessage(receiveMessageRequest());
@@ -49,7 +50,7 @@ public class ElasticMQListenerImpl implements QueueListener, Runnable {
 	public void processMessage() {
 		Optional<Message> message = getMessageFromQueue();
 		if (message.isPresent()) {
-			System.out.println("Message in the queue is :" + message.get().getBody());
+			System.out.println("Received message is :" + message.get().getBody());
 			while (!Thread.currentThread().isInterrupted()) {
 				if (isAPICallAllowed()) {
 					call3rdParty(message.get().getBody());
@@ -66,10 +67,11 @@ public class ElasticMQListenerImpl implements QueueListener, Runnable {
 	
 	private void call3rdParty(String message) {
 		REST_TEMPLATE.postForEntity(URL, message, Void.class);
+		System.out.println("Successfully called 3rd party by thread : " + Thread.currentThread().getName());
 	}
 
 	private boolean isAPICallAllowed() {
-		return Bucket4jRateLimiter.isAPICallAllowed();
+		return bucket4jRateLimiterV2.isAPICallAllowed();
 	}
 
 	@Override
