@@ -7,8 +7,12 @@ Below are some driving factors behind the code
 
 If I had the time, I would have done the following
 
-1. Implemented an interface for RateLimiters to be extended from. This way, the underlying rateLimiter is abtracted away and we can plug and play any rateLimiter with no change to the core code. 
+1. Implemented an interface for RateLimiters to be extended from. This way, the underlying rateLimiter is abtracted away and we can plug and play any rateLimiter with no change to the core code. -- 15 minutes 
 
-2. Added log4j dependecy instead of console outputs
+2. Added log4j dependecy instead of console outputs -- 10 minutes
 
-3. There is duplicate code between AcceptService and ElasticMQListenerImpl. That can be abstracted away to a common utility.
+3. There is duplicate code between AcceptService and ElasticMQListenerImpl. That can be abstracted away to a common utility. -- 15 minutes
+
+4. Places where static methods/constants were used, I would have preferred having them as objects, and that would have been part of next level of refactoring. -- 30 minutes
+
+5. Write unit test cases -- Another 90 minutes.
