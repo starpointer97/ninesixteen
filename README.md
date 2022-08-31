@@ -1,5 +1,14 @@
 This repo contains my work for NineSixteen Project
 
+*****How to Run the code******
+
+Normally, just like any other java application, run the main method in Launcher class. 
+
+****How to change the config*****
+
+The properties for throttle rate and duration are set in application.properties in src/main/resources. These can be changed to any value between 0 < value < INT.MAX_SIZE
+
+
 Below are some driving factors behind the code 
 
 1. The code was written with a strict timeline of 3 hours or less to be spent on it. 
